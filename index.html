@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Flappie Bird</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .game-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #FF6B6B;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 2.5em;
+        }
+        
+        canvas {
+            border: 3px solid #4ECDC4;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .instructions {
+            margin-top: 15px;
+            color: #2C3E50;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        
+        .score-display {
+            margin: 10px 0;
+            font-size: 1.3em;
+            color: #E74C3C;
+            font-weight: bold;
+        }
+        
+        .controls-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .controls-panel h3 {
+            margin: 0 0 15px 0;
+            color: #2C3E50;
+            font-size: 1.2em;
+        }
+        
+        .control-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .control-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .control-item label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2C3E50;
+            font-size: 0.9em;
+        }
+        
+        .control-item input {
+            width: 100px;
+            padding: 5px;
+            border: 2px solid #4ECDC4;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .control-item .value-display {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 2px;
+        }
+        
+        .mode-buttons {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .mode-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .easy-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+        
+        .normal-btn {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+        }
+        
+        .hard-btn {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+        }
+        
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🐦 Happy Flappie Bird 🌟</h1>
+        <div class="score-display">Score: <span id="scoreDisplay">0</span></div>
+        <canvas id="gameCanvas" width="400" height="600"></canvas>
+        <div class="instructions">
+            Press SPACEBAR or click to flap! 🚀
+        </div>
+        
+        <div class="controls-panel">
+            <h3>🎮 Live Game Controls</h3>
+            
+            <div class="mode-buttons">
+                <button class="mode-btn easy-btn" onclick="setEasyMode()">🌟 Easy Mode</button>
+                <button class="mode-btn normal-btn" onclick="setNormalMode()">⚡ Normal Mode</button>
+                <button class="mode-btn hard-btn" onclick="setHardMode()">💀 Hard Mode</button>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-item">
+                    <label for="gravityControl">Gravity</label>
+                    <input type="range" id="gravityControl" min="0.1" max="1" step="0.1" value="0.4">
+                    <div class="value-display" id="gravityValue">0.4</div>
+                </div>
+                <div class="control-item">
+                    <label for="jumpControl">Jump Strength</label>
+                    <input type="range" id="jumpControl" min="-12" max="-3" step="0.5" value="-7">
+                    <div class="value-display" id="jumpValue">-7</div>
+                </div>
+                <div class="control-item">
+                    <label for="pipeSpeedControl">Pipe Speed</label>
+                    <input type="range" id="pipeSpeedControl" min="0.5" max="4" step="0.1" value="1.5">
+                    <div class="value-display" id="pipeSpeedValue">1.5</div>
+                </div>
+                <div class="control-item">
+                    <label for="pipeGapControl">Pipe Gap</label>
+                    <input type="range" id="pipeGapControl" min="120" max="250" step="10" value="180">
+                    <div class="value-display" id="pipeGapValue">180</div>
+                </div>
+                <div class="control-item">
+                    <label for="spawnRateControl">Pipe Frequency</label>
+                    <input type="range" id="spawnRateControl" min="80" max="200" step="10" value="160">
+                    <div class="value-display" id="spawnRateValue">160</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
