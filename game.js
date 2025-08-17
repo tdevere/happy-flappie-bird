@@ -781,3 +781,28 @@ function setHardMode() {
     document.getElementById('spawnRateControl').value = 100;
     document.getElementById('spawnRateValue').textContent = '100';
 }
+
+function setClassicMode() {
+    const game = window.gameInstance;
+    if (!game) return;
+    // Classic mode disables Ralph and cheeseburgers
+    game.bird.gravity = 0.4;
+    game.bird.jumpStrength = -7;
+    game.pipeSpeed = 1.5;
+    game.pipeGap = 180;
+    game.pipeSpawnRate = 160;
+    game.ralph.isActive = false;
+    game.ralph.shootInterval = 999999; // Effectively disables shooting
+    game.cheeseburgers = [];
+    // Update UI controls
+    document.getElementById('gravityControl').value = 0.4;
+    document.getElementById('gravityValue').textContent = '0.4';
+    document.getElementById('jumpControl').value = -7;
+    document.getElementById('jumpValue').textContent = '-7';
+    document.getElementById('pipeSpeedControl').value = 1.5;
+    document.getElementById('pipeSpeedValue').textContent = '1.5';
+    document.getElementById('pipeGapControl').value = 180;
+    document.getElementById('pipeGapValue').textContent = '180';
+    document.getElementById('spawnRateControl').value = 160;
+    document.getElementById('spawnRateValue').textContent = '160';
+}
